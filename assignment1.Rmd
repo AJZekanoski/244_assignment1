@@ -28,7 +28,17 @@ sierra_amphibians <- read_excel(here("data", "sierra_amphibians.xlsx")) %>%
 ```
 
 
-#### Wrangle some more to get the date in a better format
+#### Wrangle some more to get the year in its own column and count observations
+```{r}
+sierra_amphibians_2 <- sierra_amphibians %>% 
+  mutate(survey_date = ymd(survey_date)) %>% 
+  mutate(year = year(survey_date)) %>% 
+  count(year, amphibian_life_stage, wt = amphibian_number) %>% 
+  rename(count = n)
+
+```
+
+
 ```{r}
 
 ```
