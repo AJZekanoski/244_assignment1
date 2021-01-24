@@ -1,0 +1,35 @@
+---
+title: "Assignment 1"
+author: "AJ Zekanoski"
+date: "1/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(ggfortify)
+library(readxl)
+library(gghighlight)
+library(lubridate)
+library(plotly)
+library(patchwork)
+library(palmerpenguins)
+library(here)
+```
+
+
+#### Read in the Sierra Amphibians xlsx data and wrangle a bit
+```{r}
+sierra_amphibians <- read_excel(here("data", "sierra_amphibians.xlsx")) %>% 
+  filter(amphibian_life_stage %in% c("Tadpole", "Adult", "SubAdult")) %>%
+  filter(amphibian_species == "RAMU")
+```
+
+
+#### Wrangle some more to get the date in a better format
+```{r}
+
+```
+
