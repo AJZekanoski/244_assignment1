@@ -1,0 +1,26 @@
+---
+title: "task2"
+author: "AJ Zekanoski"
+date: "1/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(ggfortify)
+library(readxl)
+library(gghighlight)
+library(lubridate)
+library(plotly)
+library(patchwork)
+library(here)
+```
+
+
+#### Read in the global climate data
+```{r}
+world_data <- read_csv(here("data", "world_env_vars.csv"))
+```
+
