@@ -5,8 +5,8 @@ date: "1/24/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=FALSE,  message=FALSE, warning=FALSE, echo=TRUE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 library(tidyverse)
 library(janitor)
 library(ggfortify)
@@ -21,9 +21,14 @@ library(here)
 
 #### Describe the data and the variables I will be exploring.
 
+The dataset that I'm using for principle component analysis is a set of environmental and climatic variables for 243 countries that was compiled using the Google Earth Engine. While the original data frame has 27 different variables for each country, I've chosen to focus on and explore the relationships between four of them to see how they may influence one another. I'm going to evaluate the interactions of mean annual rainfall, percentage of cropland cover, percentage of tree canopy cover, and isothermality (annual mean temperature/mean monthly temperature range). 
+
+##### Data citation: Gorelick, N., Hancher, M., Dixon, M., Ilyushchenko, S., Thau, D., & Moore, R. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. Remote Sensing of Environment.
+
+
 
 #### Read in the global climate data and wrangle to set up for principle components analysis. 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 world_data <- read_csv(here("data", "world_env_vars.csv")) %>% 
   clean_names() %>% 
   select(cropland_cover, tree_canopy_cover, rain_mean_annual, isothermality) %>% 
@@ -46,16 +51,25 @@ world_pca <- autoplot(world_data,
          loadings.colour = "green",
          loadings.label = TRUE,
          loadings.label.hjust = 1.1)
-  theme_minimal()
+  theme_minimal() +
+    theme(legend.position = FALSE)
+
   
 world_pca
+  
 ```
 
 
 #### Give the World PCA plot a nice caption
 
-```{r, fig.cap = "**Figure 1**. Princple components analysis exploring relationships between isothermality, mean annual rainfall, tree canopy cover, and crop cover for 231 countries."}
+```{r,  message=FALSE, warning=FALSE, fig.cap = "**Figure 1**. Princple components analysis exploring relationships between isothermality, mean annual rainfall, tree canopy cover, and crop cover for 231 countries."}
 world_pca
 ```
 
-
+#### Summary of PCA exploration
+* Mean annual rainfall is positively correlated with tree canopy cover. 
+  * This was unsurprising as I expected additional rainfall to be associated with greater tree canopy cover.
+* Crop cover is uncorrelated with mean annual rainfall and tree canopy cover
+  * This was somewhat surprising as I expected crop cover and mean annual rainfall to be correlated. That may have been the case historically but I suppose in most places today crops are artificially irrigated and not dependent on rainfall.
+* Isothermality is slightly negatively correlated with crop cover.
+  * Interesting because in essence what this means is that when you have a greater level of temperature fluctuations relative to the annual fluctuation, cropland coverage is expected to decrease. This makes sense because crops tend to like consistent temperatures within a relatively narrow range. When you have large fluctuations, you're less likely to have productive fields. 
