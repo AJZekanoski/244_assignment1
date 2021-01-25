@@ -1,11 +1,11 @@
 ---
-title: "Assignment 1"
+title: "Assignment 1 Task 1"
 author: "AJ Zekanoski"
 date: "1/24/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(janitor)
@@ -19,15 +19,15 @@ library(palmerpenguins)
 library(here)
 ```
 
-#### Read in the Sierra Amphibians xlsx data and wrangle a bit
-```{r}
+#### Read in the Sierra Amphibians xlsx data and wrangle a bit.
+```{r, warning=FALSE, message=FALSE}
 sierra_amphibians <- read_excel(here("data", "sierra_amphibians.xlsx")) %>% 
   filter(amphibian_life_stage %in% c("Tadpole", "Adult", "SubAdult")) %>%
   filter(amphibian_species == "RAMU")
 ```
 
 
-#### Wrangle some more w/lubridate to get the year in its own column and then count observations
+#### Wrangle some more w/lubridate to get the year in its own column and then count observations.
 ```{r}
 sierra_amphibians_2 <- sierra_amphibians %>% 
   mutate(survey_date = ymd(survey_date)) %>% 
@@ -37,13 +37,15 @@ sierra_amphibians_2 <- sierra_amphibians %>%
 ```
 
 
-#### Counts of mountain yellow-legged frog plotted with ggplot
+#### Plot counts of mountain yellow-legged frog plotted with ggplot.
 ```{r}
-ggplot(data = sierra_amphibians_2, aes(x = year, y = count)) +
+frog_plot_1 <- ggplot(data = sierra_amphibians_2, aes(x = year, y = count)) +
   facet_wrap(~amphibian_life_stage, scales = "free") +
-  geom_col(fill = "yellow") +
-  labs(x = "Year", y = "Abundance of Mountain Yellow-Legged Frogs") +
-  theme_dark()
+  geom_col(fill = "gold") +
+  labs(x = "", y = "") +
+  theme_minimal()
+
+frog_plot_1
 
 ```
 
@@ -55,4 +57,30 @@ sierra_amphibians_3 <- sierra_amphibians %>%
 ```
 
 #### Rename the Lake Id column and get counts of frogs in top five lakes. 
+```{r}
+sierra_amphibians_4 <- sierra_amphibians_3 %>% 
+  mutate(lake_id = paste0("Lake ", lake_id)) %>% 
+  count(lake_id, wt = amphibian_number) %>% 
+  rename(count = n) %>% 
+  slice_max(count, n = 5)
+```
+
+#### Graph the counts of mountain yellow frogs in the top five lakes.
+
+```{r}
+frog_plot_2 <- ggplot(data = sierra_amphibians_4,
+                      aes(x = fct_reorder(lake_id, -count), y = count)) +
+  geom_col(width = 0.7, fill = "lightblue", show.legend = FALSE) +
+  theme_minimal()
+
+frog_plot_2
+```
+
+
+```{r, fig.cap = "**Figure 1**. Mountain yellow-legged frog abundance recorded by the Sierra Lakes Inventory Project from 1995-2002. Total abundance by life stage in all water bodies (above) and abundance of combined adults and subadults in the five most populated lakes (below) are displayed."}
+ frog_plot_combined <-frog_plot_1 / frog_plot_2 + labs(x = "", y = "")
+
+frog_plot_combined
+
+```
 
