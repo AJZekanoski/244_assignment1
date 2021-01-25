@@ -19,7 +19,6 @@ library(palmerpenguins)
 library(here)
 ```
 
-
 #### Read in the Sierra Amphibians xlsx data and wrangle a bit
 ```{r}
 sierra_amphibians <- read_excel(here("data", "sierra_amphibians.xlsx")) %>% 
@@ -28,18 +27,32 @@ sierra_amphibians <- read_excel(here("data", "sierra_amphibians.xlsx")) %>%
 ```
 
 
-#### Wrangle some more to get the year in its own column and count observations
+#### Wrangle some more w/lubridate to get the year in its own column and then count observations
 ```{r}
 sierra_amphibians_2 <- sierra_amphibians %>% 
   mutate(survey_date = ymd(survey_date)) %>% 
   mutate(year = year(survey_date)) %>% 
   count(year, amphibian_life_stage, wt = amphibian_number) %>% 
   rename(count = n)
-
 ```
 
 
+#### Counts of mountain yellow-legged frog plotted with ggplot
 ```{r}
+ggplot(data = sierra_amphibians_2, aes(x = year, y = count)) +
+  facet_wrap(~amphibian_life_stage, scales = "free") +
+  geom_col(fill = "yellow") +
+  labs(x = "Year", y = "Abundance of Mountain Yellow-Legged Frogs") +
+  theme_dark()
 
 ```
+
+
+#### Filter again to only have mountain yellow frogs in the adult and subadult life stages.
+```{r}
+sierra_amphibians_3 <- sierra_amphibians %>% 
+  filter(amphibian_life_stage %in% c("Adult", "SubAdult"))
+```
+
+#### Rename the Lake Id column and get counts of frogs in top five lakes. 
 
