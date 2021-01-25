@@ -19,8 +19,34 @@ library(here)
 ```
 
 
-#### Read in the global climate data
+#### Read in the global climate data and wrangle to set up for principle components analysis. 
 ```{r}
-world_data <- read_csv(here("data", "world_env_vars.csv"))
+world_data <- read_csv(here("data", "world_env_vars.csv")) %>% 
+  clean_names() %>% 
+  select(cropland_cover, tree_canopy_cover, rain_mean_annual, isothermality) %>% 
+  rename(Crop.Cover = cropland_cover) %>% 
+  rename(Tree.Canopy.Cover = tree_canopy_cover) %>% 
+  rename(Mean.Annual.Rainfall = rain_mean_annual) %>% 
+  rename(Isothermality = isothermality) %>% 
+  drop_na() %>% 
+  scale() %>% 
+  prcomp
+
+world_complete <- read_csv(here("data", "world_env_vars.csv")) %>% 
+  drop_na(cropland_cover, tree_canopy_cover, rain_mean_annual, isothermality) %>% 
+  clean_names()
+
+autoplot(world_data,
+         data = world_complete,
+         loadings = TRUE,
+         loadings.label = TRUE) +
+  theme_minimal()
+  
 ```
+
+#### Get going with principle components analysis
+```{r}
+
+```
+
 
